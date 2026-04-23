@@ -282,7 +282,7 @@ const Admin = () => {
           </div>
         </div>
 
-        {/* Bookings Table */}
+        {/* Bookings Display - Cards on Mobile, Table on Desktop */}
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
           {filteredBookings.length === 0 ? (
             <div className="p-12 text-center">
@@ -291,171 +291,312 @@ const Admin = () => {
               <p className="text-sm text-gray-400 mt-1">Try adjusting your filters</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
-                  <tr>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                      Client
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                      Package
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                      Travel Date
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                      Travelers
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {filteredBookings.map((booking) => (
-                    <>
-                      <tr 
-                        key={booking._id}
-                        className="hover:bg-gray-50 transition-colors cursor-pointer"
-                        onClick={() => setExpandedBooking(expandedBooking === booking._id ? null : booking._id)}
-                      >
-                        <td className="px-6 py-4">
-                          <div className="flex items-center">
-                            <div className="h-10 w-10 rounded-full bg-primary-100 flex items-center justify-center mr-3">
-                              <span className="text-primary-700 font-semibold">
-                                {booking.fullName.split(' ').map(n => n[0]).join('')}
-                              </span>
-                            </div>
-                            <div>
-                              <p className="font-medium text-gray-900">{booking.fullName}</p>
-                              <p className="text-sm text-gray-500">{booking.email}</p>
-                            </div>
+            <>
+              {/* Mobile Card View */}
+              <div className="md:hidden">
+                {filteredBookings.map((booking) => (
+                  <div 
+                    key={booking._id}
+                    className="border-b border-gray-200 last:border-0"
+                  >
+                    <div 
+                      className="p-4 cursor-pointer hover:bg-gray-50 transition-colors"
+                      onClick={() => setExpandedBooking(expandedBooking === booking._id ? null : booking._id)}
+                    >
+                      {/* Header Row */}
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-center">
+                          <div className="h-10 w-10 rounded-full bg-primary-100 flex items-center justify-center mr-3 flex-shrink-0">
+                            <span className="text-primary-700 font-semibold text-sm">
+                              {booking.fullName.split(' ').map(n => n[0]).join('')}
+                            </span>
                           </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <p className="text-sm text-gray-900">{booking.packageLabel}</p>
-                          <p className="text-xs text-gray-500 capitalize">{booking.accommodation} room</p>
-                        </td>
-                        <td className="px-6 py-4">
-                          <p className="text-sm text-gray-900">
+                          <div>
+                            <p className="font-medium text-gray-900 text-sm">{booking.fullName}</p>
+                            <p className="text-xs text-gray-500">{booking.email}</p>
+                          </div>
+                        </div>
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${getStatusColor(booking.status)}`}>
+                          {getStatusIcon(booking.status)}
+                          <span className="ml-1 capitalize">{booking.status}</span>
+                        </span>
+                      </div>
+                      
+                      {/* Details Row */}
+                      <div className="space-y-2 text-sm">
+                        <div className="flex items-center text-gray-600">
+                          <Calendar className="h-4 w-4 mr-2 text-gray-400 flex-shrink-0" />
+                          <span>
                             {new Date(booking.travelDate).toLocaleDateString('en-GB', {
                               day: 'numeric',
                               month: 'short',
                               year: 'numeric'
                             })}
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            Booked {new Date(booking.createdAt).toLocaleDateString('en-GB', {
-                              day: 'numeric',
-                              month: 'short'
-                            })}
-                          </p>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center">
-                            <Users className="h-4 w-4 text-gray-400 mr-1" />
-                            <span className="text-sm text-gray-900">{booking.travelers}</span>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusColor(booking.status)}`}>
-                            {getStatusIcon(booking.status)}
-                            <span className="ml-1 capitalize">{booking.status}</span>
                           </span>
-                        </td>
-                        <td className="px-6 py-4 text-right">
-                          <button 
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setExpandedBooking(expandedBooking === booking._id ? null : booking._id);
-                            }}
-                            className="text-primary-600 hover:text-primary-800"
-                          >
-                            {expandedBooking === booking._id ? (
-                              <ChevronUp className="h-5 w-5" />
-                            ) : (
-                              <ChevronDown className="h-5 w-5" />
-                            )}
-                          </button>
-                        </td>
-                      </tr>
-                      
-                      {/* Expanded Details */}
-                      {expandedBooking === booking._id && (
-                        <tr>
-                          <td colSpan={6} className="px-6 py-4 bg-gray-50 border-b border-gray-200">
-                            <div className="grid md:grid-cols-2 gap-6">
-                              <div>
-                                <h4 className="font-semibold text-gray-900 mb-3">Contact Information</h4>
-                                <div className="space-y-2 text-sm">
-                                  <p className="flex items-center text-gray-600">
-                                    <Mail className="h-4 w-4 mr-2 text-gray-400" />
-                                    {booking.email}
-                                  </p>
-                                  <p className="flex items-center text-gray-600">
-                                    <Phone className="h-4 w-4 mr-2 text-gray-400" />
-                                    {booking.phone}
-                                  </p>
-                                </div>
-                                
-                                {booking.message && (
-                                  <div className="mt-4">
-                                    <h4 className="font-semibold text-gray-900 mb-2">Special Requests</h4>
-                                    <p className="text-sm text-gray-600 bg-white p-3 rounded-lg border border-gray-200">
-                                      {booking.message}
-                                    </p>
-                                  </div>
-                                )}
+                        </div>
+                        <div className="flex items-center text-gray-600">
+                          <Users className="h-4 w-4 mr-2 text-gray-400 flex-shrink-0" />
+                          <span>{booking.travelers} travelers • {booking.accommodation} room</span>
+                        </div>
+                        <p className="text-gray-700 font-medium text-sm mt-2">{booking.packageLabel}</p>
+                      </div>
+
+                      {/* Expand Icon */}
+                      <div className="flex justify-center mt-3">
+                        {expandedBooking === booking._id ? (
+                          <ChevronUp className="h-5 w-5 text-gray-400" />
+                        ) : (
+                          <ChevronDown className="h-5 w-5 text-gray-400" />
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Expanded Details */}
+                    {expandedBooking === booking._id && (
+                      <div className="px-4 pb-4 bg-gray-50 border-t border-gray-100">
+                        <div className="pt-4 space-y-4">
+                          {/* Contact Info */}
+                          <div>
+                            <h4 className="font-semibold text-gray-900 mb-2 text-sm">Contact Information</h4>
+                            <div className="space-y-1.5 text-sm">
+                              <a href={`mailto:${booking.email}`} className="flex items-center text-gray-600">
+                                <Mail className="h-4 w-4 mr-2 text-gray-400 flex-shrink-0" />
+                                {booking.email}
+                              </a>
+                              <a href={`tel:${booking.phone}`} className="flex items-center text-gray-600">
+                                <Phone className="h-4 w-4 mr-2 text-gray-400 flex-shrink-0" />
+                                {booking.phone}
+                              </a>
+                            </div>
+                          </div>
+
+                          {/* Special Requests */}
+                          {booking.message && (
+                            <div>
+                              <h4 className="font-semibold text-gray-900 mb-2 text-sm">Special Requests</h4>
+                              <p className="text-sm text-gray-600 bg-white p-3 rounded-lg border border-gray-200">
+                                {booking.message}
+                              </p>
+                            </div>
+                          )}
+
+                          {/* Booking Meta */}
+                          <div className="text-xs text-gray-500">
+                            Booked on {new Date(booking.createdAt).toLocaleDateString('en-GB', {
+                              day: 'numeric',
+                              month: 'long',
+                              year: 'numeric'
+                            })}
+                          </div>
+
+                          {/* Actions */}
+                          <div>
+                            <h4 className="font-semibold text-gray-900 mb-2 text-sm">Actions</h4>
+                            <div className="flex flex-wrap gap-2">
+                              <button
+                                onClick={() => handleStatusChange(booking._id, 'confirmed')}
+                                disabled={booking.status === 'confirmed'}
+                                className="px-3 py-1.5 bg-green-500 hover:bg-green-600 disabled:bg-gray-300 text-white text-xs font-medium rounded-lg transition-colors"
+                              >
+                                Confirm
+                              </button>
+                              <button
+                                onClick={() => handleStatusChange(booking._id, 'pending')}
+                                disabled={booking.status === 'pending'}
+                                className="px-3 py-1.5 bg-yellow-500 hover:bg-yellow-600 disabled:bg-gray-300 text-white text-xs font-medium rounded-lg transition-colors"
+                              >
+                                Pending
+                              </button>
+                              <button
+                                onClick={() => handleStatusChange(booking._id, 'cancelled')}
+                                disabled={booking.status === 'cancelled'}
+                                className="px-3 py-1.5 bg-red-500 hover:bg-red-600 disabled:bg-gray-300 text-white text-xs font-medium rounded-lg transition-colors"
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                onClick={() => handleDelete(booking._id)}
+                                className="flex items-center px-3 py-1.5 text-red-600 hover:bg-red-50 text-xs font-medium rounded-lg transition-colors"
+                              >
+                                <Trash2 className="h-3 w-3 mr-1" />
+                                Delete
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50 border-b border-gray-200">
+                    <tr>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        Client
+                      </th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        Package
+                      </th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        Travel Date
+                      </th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        Travelers
+                      </th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        Status
+                      </th>
+                      <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {filteredBookings.map((booking) => (
+                      <>
+                        <tr 
+                          key={booking._id}
+                          className="hover:bg-gray-50 transition-colors cursor-pointer"
+                          onClick={() => setExpandedBooking(expandedBooking === booking._id ? null : booking._id)}
+                        >
+                          <td className="px-6 py-4">
+                            <div className="flex items-center">
+                              <div className="h-10 w-10 rounded-full bg-primary-100 flex items-center justify-center mr-3">
+                                <span className="text-primary-700 font-semibold">
+                                  {booking.fullName.split(' ').map(n => n[0]).join('')}
+                                </span>
                               </div>
-                              
                               <div>
-                                <h4 className="font-semibold text-gray-900 mb-3">Actions</h4>
-                                <div className="space-y-2">
-                                  <div className="flex gap-2">
-                                    <button
-                                      onClick={() => handleStatusChange(booking._id, 'confirmed')}
-                                      disabled={booking.status === 'confirmed'}
-                                      className="px-4 py-2 bg-green-500 hover:bg-green-600 disabled:bg-gray-300 text-white text-sm font-medium rounded-lg transition-colors"
-                                    >
-                                      Confirm
-                                    </button>
-                                    <button
-                                      onClick={() => handleStatusChange(booking._id, 'pending')}
-                                      disabled={booking.status === 'pending'}
-                                      className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 disabled:bg-gray-300 text-white text-sm font-medium rounded-lg transition-colors"
-                                    >
-                                      Mark Pending
-                                    </button>
-                                    <button
-                                      onClick={() => handleStatusChange(booking._id, 'cancelled')}
-                                      disabled={booking.status === 'cancelled'}
-                                      className="px-4 py-2 bg-red-500 hover:bg-red-600 disabled:bg-gray-300 text-white text-sm font-medium rounded-lg transition-colors"
-                                    >
-                                      Cancel
-                                    </button>
-                                  </div>
-                                  <button
-                                    onClick={() => handleDelete(booking._id)}
-                                    className="flex items-center px-4 py-2 text-red-600 hover:bg-red-50 text-sm font-medium rounded-lg transition-colors"
-                                  >
-                                    <Trash2 className="h-4 w-4 mr-2" />
-                                    Delete Booking
-                                  </button>
-                                </div>
+                                <p className="font-medium text-gray-900">{booking.fullName}</p>
+                                <p className="text-sm text-gray-500">{booking.email}</p>
                               </div>
                             </div>
                           </td>
+                          <td className="px-6 py-4">
+                            <p className="text-sm text-gray-900">{booking.packageLabel}</p>
+                            <p className="text-xs text-gray-500 capitalize">{booking.accommodation} room</p>
+                          </td>
+                          <td className="px-6 py-4">
+                            <p className="text-sm text-gray-900">
+                              {new Date(booking.travelDate).toLocaleDateString('en-GB', {
+                                day: 'numeric',
+                                month: 'short',
+                                year: 'numeric'
+                              })}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              Booked {new Date(booking.createdAt).toLocaleDateString('en-GB', {
+                                day: 'numeric',
+                                month: 'short'
+                              })}
+                            </p>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center">
+                              <Users className="h-4 w-4 text-gray-400 mr-1" />
+                              <span className="text-sm text-gray-900">{booking.travelers}</span>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusColor(booking.status)}`}>
+                              {getStatusIcon(booking.status)}
+                              <span className="ml-1 capitalize">{booking.status}</span>
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-right">
+                            <button 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setExpandedBooking(expandedBooking === booking._id ? null : booking._id);
+                              }}
+                              className="text-primary-600 hover:text-primary-800"
+                            >
+                              {expandedBooking === booking._id ? (
+                                <ChevronUp className="h-5 w-5" />
+                              ) : (
+                                <ChevronDown className="h-5 w-5" />
+                              )}
+                            </button>
+                          </td>
                         </tr>
-                      )}
-                    </>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                        
+                        {/* Expanded Details */}
+                        {expandedBooking === booking._id && (
+                          <tr>
+                            <td colSpan={6} className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+                              <div className="grid md:grid-cols-2 gap-6">
+                                <div>
+                                  <h4 className="font-semibold text-gray-900 mb-3">Contact Information</h4>
+                                  <div className="space-y-2 text-sm">
+                                    <p className="flex items-center text-gray-600">
+                                      <Mail className="h-4 w-4 mr-2 text-gray-400" />
+                                      {booking.email}
+                                    </p>
+                                    <p className="flex items-center text-gray-600">
+                                      <Phone className="h-4 w-4 mr-2 text-gray-400" />
+                                      {booking.phone}
+                                    </p>
+                                  </div>
+                                  
+                                  {booking.message && (
+                                    <div className="mt-4">
+                                      <h4 className="font-semibold text-gray-900 mb-2">Special Requests</h4>
+                                      <p className="text-sm text-gray-600 bg-white p-3 rounded-lg border border-gray-200">
+                                        {booking.message}
+                                      </p>
+                                    </div>
+                                  )}
+                                </div>
+                                
+                                <div>
+                                  <h4 className="font-semibold text-gray-900 mb-3">Actions</h4>
+                                  <div className="space-y-2">
+                                    <div className="flex gap-2">
+                                      <button
+                                        onClick={() => handleStatusChange(booking._id, 'confirmed')}
+                                        disabled={booking.status === 'confirmed'}
+                                        className="px-4 py-2 bg-green-500 hover:bg-green-600 disabled:bg-gray-300 text-white text-sm font-medium rounded-lg transition-colors"
+                                      >
+                                        Confirm
+                                      </button>
+                                      <button
+                                        onClick={() => handleStatusChange(booking._id, 'pending')}
+                                        disabled={booking.status === 'pending'}
+                                        className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 disabled:bg-gray-300 text-white text-sm font-medium rounded-lg transition-colors"
+                                      >
+                                        Mark Pending
+                                      </button>
+                                      <button
+                                        onClick={() => handleStatusChange(booking._id, 'cancelled')}
+                                        disabled={booking.status === 'cancelled'}
+                                        className="px-4 py-2 bg-red-500 hover:bg-red-600 disabled:bg-gray-300 text-white text-sm font-medium rounded-lg transition-colors"
+                                      >
+                                        Cancel
+                                      </button>
+                                    </div>
+                                    <button
+                                      onClick={() => handleDelete(booking._id)}
+                                      className="flex items-center px-4 py-2 text-red-600 hover:bg-red-50 text-sm font-medium rounded-lg transition-colors"
+                                    >
+                                      <Trash2 className="h-4 w-4 mr-2" />
+                                      Delete Booking
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                      </>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
           )}
         </div>
 
