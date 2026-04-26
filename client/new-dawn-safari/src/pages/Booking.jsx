@@ -32,19 +32,38 @@ const Booking = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  
+  const WEB3FORMS_KEY = '866005d0-657f-49c4-b91a-305b26858b8e';
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitError('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/bookings', {
+      // Prepare form data for Web3Forms
+      const formDataObj = new FormData();
+      formDataObj.append('access_key', WEB3FORMS_KEY);
+      formDataObj.append('subject', `New Safari Booking from ${formData.fullName}`);
+      formDataObj.append('from_name', formData.fullName);
+      formDataObj.append('replyto', formData.email);
+      formDataObj.append('name', formData.fullName);
+      formDataObj.append('email', formData.email);
+      formDataObj.append('phone', formData.phone);
+      formDataObj.append('package', packages.find(p => p.value === formData.package)?.label || formData.package);
+      formDataObj.append('travel_date', formData.travelDate);
+      formDataObj.append('travelers', formData.travelers);
+      formDataObj.append('accommodation', formData.accommodation);
+      formDataObj.append('message', formData.message);
+
+      const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: formDataObj
       });
 
-      if (response.ok) {
+      const data = await response.json();
+
+      if (data.success) {
         setSubmitSuccess(true);
         setFormData({
           fullName: '',
@@ -57,7 +76,7 @@ const Booking = () => {
           message: ''
         });
       } else {
-        throw new Error('Failed to submit booking');
+        throw new Error(data.message || 'Failed to submit booking');
       }
     } catch (error) {
       setSubmitError('Failed to submit booking. Please try again or contact us directly.');

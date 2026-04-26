@@ -14,7 +14,7 @@ const Footer = () => {
                 <Sun className="h-5 w-5 text-white" />
               </div>
               <div className="flex flex-col">
-                <span className="font-bold text-lg">NEW DAWN</span>
+                <span className="font-bold text-lg">NEW DAWN AFRICA</span>
                 <span className="text-primary-400 text-xs tracking-widest">SAFARIS</span>
               </div>
             </div>
@@ -42,12 +42,13 @@ const Footer = () => {
                 <MapPin className="h-4 w-4 text-primary-400 flex-shrink-0" />
                 <span className="text-gray-400">Nairobi, Kenya</span>
               </li>
-              <li className="flex items-center space-x-3">
-                <Phone className="h-4 w-4 text-primary-400 flex-shrink-0" />
+              <li className="flex items-start space-x-3">
+                <Phone className="h-4 w-4 text-primary-400 flex-shrink-0 mt-0.5" />
                 <div className="text-gray-400">
-                  <p>Drusilah: 0712695186</p>
-                  <p>Milka: 0712981009</p>
-                  <p>Maingi: 0708400078</p>
+                  <p className="font-medium text-primary-300 mb-1">Customer Care</p>
+                  <p>0712695186</p>
+                  <p>0712981009</p>
+                  <p>0708400078</p>
                 </div>
               </li>
               <li className="flex items-center space-x-3">
@@ -61,7 +62,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="border-t border-gray-800 mt-8 pt-8 text-center">
           <p className="text-gray-500 text-sm">
-            © {currentYear} New Dawn Safaris. All rights reserved.
+            © {currentYear} New Dawn Africa Safaris. All rights reserved.
           </p>
         </div>
       </div>

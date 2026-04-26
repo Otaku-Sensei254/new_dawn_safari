@@ -12,42 +12,51 @@ const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
-  const teamContacts = [
-    {
-      name: 'Drusilah',
-      role: 'Safari Consultant',
-      phone: '0712695186',
-      image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80'
-    },
-    {
-      name: 'Milka',
-      role: 'Booking Coordinator',
-      phone: '0712981009',
-      image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&q=80'
-    },
-    {
-      name: 'Maingi',
-      role: 'Operations Manager',
-      phone: '0708400078',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80'
-    }
-  ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  // Web3Forms configuration
+  const WEB3FORMS_KEY = '866005d0-657f-49c4-b91a-305b26858b8e';
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // Simulate form submission
-    setTimeout(() => {
+
+    try {
+      // Prepare form data for Web3Forms
+      const formDataObj = new FormData();
+      formDataObj.append('access_key', WEB3FORMS_KEY);
+      formDataObj.append('subject', `Contact Form: ${formData.subject}`);
+      formDataObj.append('from_name', formData.name);
+      formDataObj.append('replyto', formData.email);
+      formDataObj.append('name', formData.name);
+      formDataObj.append('email', formData.email);
+      formDataObj.append('phone', formData.phone);
+      formDataObj.append('subject', formData.subject);
+      formDataObj.append('message', formData.message);
+
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: formDataObj
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setSubmitSuccess(true);
+        setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
+      } else {
+        throw new Error(data.message || 'Failed to send message');
+      }
+    } catch (error) {
+      console.error('Contact form error:', error);
+      alert('Failed to send message. Please try again or contact us directly.');
+    } finally {
       setIsSubmitting(false);
-      setSubmitSuccess(true);
-      setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
-    }, 1500);
+    }
   };
 
   return (
@@ -65,46 +74,6 @@ const Contact = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-16">
-        {/* Team Section */}
-        <div className="mb-16">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 font-serif">
-              Meet Our <span className="text-primary-600">Team</span>
-            </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              The Visionary Trio behind New Dawn Safaris. Contact any of our dedicated team members for personalized assistance.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {teamContacts.map((member) => (
-              <div key={member.name} className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-                <div className="h-32 bg-gradient-to-r from-primary-500 to-primary-700"></div>
-                <div className="px-6 pb-6">
-                  <div className="relative -mt-12 mb-4">
-                    <img
-                      src={member.image}
-                      alt={member.name}
-                      className="w-24 h-24 rounded-full border-4 border-white shadow-md object-cover mx-auto"
-                    />
-                  </div>
-                  <div className="text-center">
-                    <h3 className="text-xl font-bold text-gray-900 mb-1">{member.name}</h3>
-                    <p className="text-primary-600 font-medium text-sm mb-4">{member.role}</p>
-                    <a
-                      href={`tel:${member.phone}`}
-                      className="inline-flex items-center px-4 py-2 bg-primary-50 hover:bg-primary-100 text-primary-700 font-medium rounded-lg transition-colors"
-                    >
-                      <Phone className="h-4 w-4 mr-2" />
-                      {member.phone}
-                    </a>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Contact Information */}
           <div className="lg:col-span-1 space-y-6">
@@ -117,10 +86,10 @@ const Contact = () => {
                     <Phone className="h-5 w-5 text-primary-600" />
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">Phone</p>
-                    <p className="text-sm text-gray-600">0712695186 (Drusilah)</p>
-                    <p className="text-sm text-gray-600">0712981009 (Milka)</p>
-                    <p className="text-sm text-gray-600">0708400078 (Maingi)</p>
+                    <p className="font-medium text-gray-900">Customer Care</p>
+                    <p className="text-sm text-gray-600">0712695186</p>
+                    <p className="text-sm text-gray-600">0712981009</p>
+                    <p className="text-sm text-gray-600">0708400078</p>
                   </div>
                 </div>
 
@@ -147,8 +116,9 @@ const Contact = () => {
                   <div>
                     <p className="font-medium text-gray-900">Location</p>
                     <p className="text-sm text-gray-600">
-                      Nairobi, Kenya<br />
-                      Serving all of East Africa
+                      Krishna Centre, 7th Floor, Suite 707<br />
+                      Woodvale Grove, Westlands<br />
+                      Nairobi, Kenya
                     </p>
                   </div>
                 </div>

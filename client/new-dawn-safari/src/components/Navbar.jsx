@@ -9,9 +9,9 @@ const Navbar = () => {
   const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'Safari Packages', path: '/#packages' },
+    { name: 'Gallery', path: '/gallery' },
     { name: 'Book a Tour', path: '/booking' },
     { name: 'Contact Us', path: '/contact' },
-    { name: 'Admin', path: '/admin' },
   ];
 
   const isActive = (path) => location.pathname === path;
@@ -26,7 +26,7 @@ const Navbar = () => {
               <Sun className="h-6 w-6 text-white" />
             </div>
             <div className="flex flex-col">
-              <span className="text-white font-bold text-xl tracking-wide">NEW DAWN</span>
+              <span className="text-white font-bold text-lg tracking-wide">NEW DAWN AFRICA</span>
               <span className="text-primary-200 text-xs tracking-widest">SAFARIS</span>
             </div>
           </Link>
