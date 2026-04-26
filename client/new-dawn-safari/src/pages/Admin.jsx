@@ -1,13 +1,98 @@
 import { useState, useEffect } from 'react';
-import { 
-  Users, Calendar, Phone, Mail, Search, Filter, 
+import {
+  Users, Calendar, Phone, Mail, Search, Filter,
   ChevronDown, ChevronUp, CheckCircle, Clock, AlertCircle,
-  RefreshCw, Download, Trash2
+  RefreshCw, Download, Trash2, Lock, LogOut, Eye, EyeOff
 } from 'lucide-react';
 
+// Dummy credentials - in production, use proper authentication
+const ADMIN_USERNAME = 'admin';
+const ADMIN_PASSWORD = 'safari2026';
+
+// Mock data for demonstration - defined outside component to prevent re-renders
+const mockBookings = [
+  {
+    _id: '1',
+    fullName: 'John Kamau',
+    email: 'john.kamau@email.com',
+    phone: '0722123456',
+    package: 'masai-mara-peak',
+    packageLabel: 'Masai Mara Adventure - Peak Season',
+    travelDate: '2026-08-15',
+    travelers: '4',
+    accommodation: 'double',
+    message: 'Celebrating our anniversary, looking for a special experience.',
+    status: 'pending',
+    createdAt: '2026-04-20T10:30:00Z'
+  },
+  {
+    _id: '2',
+    fullName: 'Sarah Ochieng',
+    email: 'sarah.o@email.com',
+    phone: '0711987654',
+    package: 'coastal-south',
+    packageLabel: 'Coastal Beach Getaway - South Coast',
+    travelDate: '2026-06-10',
+    travelers: '2',
+    accommodation: 'single',
+    message: 'Honeymoon trip, prefer quiet resort with ocean view.',
+    status: 'confirmed',
+    createdAt: '2026-04-19T14:22:00Z'
+  },
+  {
+    _id: '3',
+    fullName: 'Michael Njoroge',
+    email: 'm.njoroge@email.com',
+    phone: '0733456789',
+    package: 'big-five',
+    packageLabel: 'Big Five Safari Experience - 5 Days',
+    travelDate: '2026-07-20',
+    travelers: '6',
+    accommodation: 'double',
+    message: 'Family reunion trip. Need vegetarian meal options.',
+    status: 'pending',
+    createdAt: '2026-04-18T09:15:00Z'
+  },
+  {
+    _id: '4',
+    fullName: 'Grace Wanjiku',
+    email: 'grace.w@email.com',
+    phone: '0708567890',
+    package: 'masai-mara-green',
+    packageLabel: 'Masai Mara Adventure - Green Season',
+    travelDate: '2026-05-12',
+    travelers: '3',
+    accommodation: 'double',
+    message: 'Photography enthusiast, need early morning game drives.',
+    status: 'confirmed',
+    createdAt: '2026-04-17T16:45:00Z'
+  },
+  {
+    _id: '5',
+    fullName: 'David Mutua',
+    email: 'd.mutua@email.com',
+    phone: '0712233445',
+    package: 'custom',
+    packageLabel: 'Custom Safari Package',
+    travelDate: '2026-09-05',
+    travelers: '2',
+    accommodation: 'single',
+    message: 'Interested in combining Masai Mara with Amboseli. 7 days total.',
+    status: 'pending',
+    createdAt: '2026-04-15T11:20:00Z'
+  }
+];
+
 const Admin = () => {
+  // Login state
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loginForm, setLoginForm] = useState({ username: '', password: '' });
+  const [loginError, setLoginError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+  // Admin state
   const [bookings, setBookings] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -15,90 +100,49 @@ const Admin = () => {
   const [sortOrder, setSortOrder] = useState('desc');
   const [expandedBooking, setExpandedBooking] = useState(null);
 
-  // Mock data for demonstration - in production this would come from the API
-  const mockBookings = [
-    {
-      _id: '1',
-      fullName: 'John Kamau',
-      email: 'john.kamau@email.com',
-      phone: '0722123456',
-      package: 'masai-mara-peak',
-      packageLabel: 'Masai Mara Adventure - Peak Season',
-      travelDate: '2026-08-15',
-      travelers: '4',
-      accommodation: 'double',
-      message: 'Celebrating our anniversary, looking for a special experience.',
-      status: 'pending',
-      createdAt: '2026-04-20T10:30:00Z'
-    },
-    {
-      _id: '2',
-      fullName: 'Sarah Ochieng',
-      email: 'sarah.o@email.com',
-      phone: '0711987654',
-      package: 'coastal-south',
-      packageLabel: 'Coastal Beach Getaway - South Coast',
-      travelDate: '2026-06-10',
-      travelers: '2',
-      accommodation: 'single',
-      message: 'Honeymoon trip, prefer quiet resort with ocean view.',
-      status: 'confirmed',
-      createdAt: '2026-04-19T14:22:00Z'
-    },
-    {
-      _id: '3',
-      fullName: 'Michael Njoroge',
-      email: 'm.njoroge@email.com',
-      phone: '0733456789',
-      package: 'big-five',
-      packageLabel: 'Big Five Safari Experience - 5 Days',
-      travelDate: '2026-07-20',
-      travelers: '6',
-      accommodation: 'double',
-      message: 'Family reunion trip. Need vegetarian meal options.',
-      status: 'pending',
-      createdAt: '2026-04-18T09:15:00Z'
-    },
-    {
-      _id: '4',
-      fullName: 'Grace Wanjiku',
-      email: 'grace.w@email.com',
-      phone: '0708567890',
-      package: 'masai-mara-green',
-      packageLabel: 'Masai Mara Adventure - Green Season',
-      travelDate: '2026-05-12',
-      travelers: '3',
-      accommodation: 'double',
-      message: 'Photography enthusiast, need early morning game drives.',
-      status: 'confirmed',
-      createdAt: '2026-04-17T16:45:00Z'
-    },
-    {
-      _id: '5',
-      fullName: 'David Mutua',
-      email: 'd.mutua@email.com',
-      phone: '0712233445',
-      package: 'custom',
-      packageLabel: 'Custom Safari Package',
-      travelDate: '2026-09-05',
-      travelers: '2',
-      accommodation: 'single',
-      message: 'Interested in combining Masai Mara with Amboseli. 7 days total.',
-      status: 'pending',
-      createdAt: '2026-04-15T11:20:00Z'
-    }
-  ];
-
+  // Check if already logged in from sessionStorage
   useEffect(() => {
+    const loggedIn = sessionStorage.getItem('adminLoggedIn');
+    if (loggedIn === 'true') {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  // Handle login
+  const handleLogin = (e) => {
+    e.preventDefault();
+    setLoginError('');
+
+    if (loginForm.username === ADMIN_USERNAME && loginForm.password === ADMIN_PASSWORD) {
+      setIsLoggedIn(true);
+      sessionStorage.setItem('adminLoggedIn', 'true');
+      setLoginForm({ username: '', password: '' });
+    } else {
+      setLoginError('Invalid username or password');
+    }
+  };
+
+  // Handle logout
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    sessionStorage.removeItem('adminLoggedIn');
+    setBookings([]);
+  };
+
+  // Fetch bookings when logged in
+  useEffect(() => {
+    if (!isLoggedIn) return;
+
     // In production, fetch from API:
     // fetch('http://localhost:5000/api/bookings').then(res => res.json()).then(data => setBookings(data))
-    
+
     // Using mock data for now
+    setLoading(true);
     setTimeout(() => {
       setBookings(mockBookings);
       setLoading(false);
     }, 1000);
-  }, []);
+  }, [isLoggedIn]);
 
   const handleStatusChange = async (bookingId, newStatus) => {
     // In production, call API to update status
@@ -160,6 +204,82 @@ const Admin = () => {
     totalTravelers: bookings.reduce((sum, b) => sum + parseInt(b.travelers), 0)
   };
 
+  // Login Form
+  if (!isLoggedIn) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-primary-600 to-primary-800 flex items-center justify-center px-4">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Lock className="h-8 w-8 text-primary-600" />
+            </div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">Admin Login</h1>
+            <p className="text-gray-600 text-sm">
+              New Dawn Africa Safaris - Secure Access
+            </p>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Username
+              </label>
+              <input
+                type="text"
+                value={loginForm.username}
+                onChange={(e) => setLoginForm(prev => ({ ...prev, username: e.target.value }))}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+                placeholder="Enter username"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={loginForm.password}
+                  onChange={(e) => setLoginForm(prev => ({ ...prev, password: e.target.value }))}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none pr-10"
+                  placeholder="Enter password"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                </button>
+              </div>
+            </div>
+
+            {loginError && (
+              <div className="bg-red-50 text-red-600 px-4 py-2 rounded-lg text-sm">
+                {loginError}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              className="w-full py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg transition-colors"
+            >
+              Login
+            </button>
+          </form>
+
+          <div className="mt-6 text-center text-xs text-gray-500">
+            <p>Default credentials: admin / safari2026</p>
+            <p className="mt-1">Note: In production, use secure authentication</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -175,13 +295,22 @@ const Admin = () => {
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2 font-serif">
-            Admin Dashboard
-          </h1>
-          <p className="text-gray-600">
-            Manage safari bookings and track reservations
-          </p>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2 font-serif">
+              Admin Dashboard
+            </h1>
+            <p className="text-gray-600">
+              Manage safari bookings and track reservations
+            </p>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="flex items-center px-4 py-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+          >
+            <LogOut className="h-5 w-5 mr-2" />
+            Logout
+          </button>
         </div>
 
         {/* Stats Cards */}

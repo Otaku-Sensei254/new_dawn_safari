@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Calendar, Users, MapPin, Phone, Mail, User, CheckCircle, ChevronDown } from 'lucide-react';
+import { Calendar, Users, MapPin, Phone, Mail, User, CheckCircle, ChevronDown, Wallet } from 'lucide-react';
 
 const Booking = () => {
   const [formData, setFormData] = useState({
@@ -33,7 +33,7 @@ const Booking = () => {
   };
 
   
-  const WEB3FORMS_KEY = '866005d0-657f-49c4-b91a-305b26858b8e';
+  const WEB3FORMS_KEY = '35353c35-6196-44bd-ac2d-c6ffc6d654bb';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,7 +45,7 @@ const Booking = () => {
       const formDataObj = new FormData();
       formDataObj.append('access_key', WEB3FORMS_KEY);
       formDataObj.append('subject', `New Safari Booking from ${formData.fullName}`);
-      formDataObj.append('from_name', formData.fullName);
+      formDataObj.append('from_name', 'newdawnafrica');
       formDataObj.append('replyto', formData.email);
       formDataObj.append('name', formData.fullName);
       formDataObj.append('email', formData.email);
@@ -373,6 +373,36 @@ const Booking = () => {
                     <p className="text-sm text-primary-600">0708400078</p>
                   </div>
                 </a>
+              </div>
+            </div>
+
+            {/* Payment Info Card */}
+            <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-green-500">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <Wallet className="h-5 w-5 mr-2 text-green-600" />
+                Payment Details
+              </h3>
+              <div className="space-y-4 text-sm">
+                <div className="bg-green-50 rounded-lg p-4">
+                  <p className="font-medium text-gray-900 mb-2">Equity Bank - M-Pesa Paybill</p>
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Paybill Number:</span>
+                      <span className="font-semibold text-gray-900">247247</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Account Number:</span>
+                      <span className="font-semibold text-gray-900">1040187255525</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Account Name:</span>
+                      <span className="font-semibold text-gray-900">David Maingi</span>
+                    </div>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-500">
+                  After booking, you'll receive a confirmation email with full payment instructions. A deposit may be required to secure your reservation.
+                </p>
               </div>
             </div>
 

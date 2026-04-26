@@ -19,7 +19,7 @@ const Contact = () => {
   };
 
   // Web3Forms configuration
-  const WEB3FORMS_KEY = '866005d0-657f-49c4-b91a-305b26858b8e';
+  const WEB3FORMS_KEY = '35353c35-6196-44bd-ac2d-c6ffc6d654bb';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,7 +30,7 @@ const Contact = () => {
       const formDataObj = new FormData();
       formDataObj.append('access_key', WEB3FORMS_KEY);
       formDataObj.append('subject', `Contact Form: ${formData.subject}`);
-      formDataObj.append('from_name', formData.name);
+      formDataObj.append('from_name', 'newdawnafrica');
       formDataObj.append('replyto', formData.email);
       formDataObj.append('name', formData.name);
       formDataObj.append('email', formData.email);

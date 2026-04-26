@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { 
   Compass, Shield, Heart, Users, 
-  MapPin, Calendar, ChevronRight, Star 
+  MapPin, Calendar, ChevronRight, Star, Building
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -392,6 +392,32 @@ const Home = () => {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Office Location Section */}
+      <section className="py-16 bg-white px-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-gradient-to-br from-primary-50 to-primary-100 rounded-2xl p-8 md:p-12">
+            <div className="flex flex-col md:flex-row items-center gap-8">
+              <div className="w-20 h-20 bg-primary-500 rounded-full flex items-center justify-center flex-shrink-0">
+                <Building className="h-10 w-10 text-white" />
+              </div>
+              <div className="text-center md:text-left">
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3 font-serif">
+                  Visit Our Office
+                </h2>
+                <div className="space-y-1 text-gray-700">
+                  <p className="font-medium">Krishna Centre, 7th Floor, Suite 707</p>
+                  <p>Woodvale Grove, Westlands</p>
+                  <p>Nairobi, Kenya</p>
+                </div>
+                <p className="text-sm text-gray-500 mt-3">
+                  Monday - Friday: 8AM - 6PM | Saturday: 9AM - 4PM
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
