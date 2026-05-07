@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Sun, Phone } from 'lucide-react';
+import CurrencyToggle from './CurrencyToggle';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -48,10 +49,13 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* Quick Contact */}
-          <div className="hidden md:flex items-center space-x-2 text-white">
-            <Phone className="h-4 w-4" />
-            <span className="text-sm font-medium">0712695186</span>
+          {/* Currency Toggle & Quick Contact */}
+          <div className="hidden md:flex items-center space-x-4 text-white">
+            <CurrencyToggle />
+            <div className="flex items-center space-x-2">
+              <Phone className="h-4 w-4" />
+              <span className="text-sm font-medium">0712695186</span>
+            </div>
           </div>
 
           {/* Mobile menu button */}
@@ -84,6 +88,9 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
+            <div className="px-3 py-2">
+              <CurrencyToggle />
+            </div>
             <div className="flex items-center space-x-2 text-white px-3 py-2">
               <Phone className="h-4 w-4" />
               <span className="text-sm">0712695186</span>

@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { Calendar, Users, MapPin, Phone, Mail, User, CheckCircle, ChevronDown, Wallet } from 'lucide-react';
+import { useCurrency } from '../contexts/CurrencyContext';
 
 const Booking = () => {
+  const { formatPrice } = useCurrency();
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -17,14 +19,14 @@ const Booking = () => {
   const [submitError, setSubmitError] = useState('');
 
   const packages = [
-    { value: '', label: 'Select a Safari Package', price: '' },
-    { value: 'masai-mara-green', label: 'Masai Mara Adventure - Green Season (Apr-Jun 2026)', price: 'From Kes.26,460/person' },
-    { value: 'masai-mara-peak', label: 'Masai Mara Adventure - Peak Season (Jul-Oct 2026)', price: 'From Kes.37,260/person' },
-    { value: 'masai-mara-regular', label: 'Masai Mara Adventure - Regular Season (Nov-Dec 2026)', price: 'From Kes.32,400/person' },
-    { value: 'coastal-north', label: 'Coastal Beach Getaway - North Coast', price: 'From Kes.51,300/person' },
-    { value: 'coastal-south', label: 'Coastal Beach Getaway - South Coast', price: 'From Kes.81,140/person' },
-    { value: 'big-five', label: 'Big Five Safari Experience - 5 Days', price: 'From Kes.75,000/person' },
-    { value: 'custom', label: 'Custom Safari Package', price: 'Contact for quote' }
+    { value: '', label: 'Select a Safari Package', priceKES: null, price: '' },
+    { value: 'masai-mara-green', label: 'Masai Mara Adventure - Green Season (Apr-Jun 2026)', priceKES: 26460 },
+    { value: 'masai-mara-peak', label: 'Masai Mara Adventure - Peak Season (Jul-Oct 2026)', priceKES: 37260 },
+    { value: 'masai-mara-regular', label: 'Masai Mara Adventure - Regular Season (Nov-Dec 2026)', priceKES: 32400 },
+    { value: 'coastal-north', label: 'Coastal Beach Getaway - North Coast', priceKES: 51300 },
+    { value: 'coastal-south', label: 'Coastal Beach Getaway - South Coast', priceKES: 81140 },
+    { value: 'big-five', label: 'Big Five Safari Experience - 5 Days', priceKES: 75000 },
+    { value: 'custom', label: 'Custom Safari Package', priceKES: null }
   ];
 
   const handleChange = (e) => {
@@ -221,7 +223,11 @@ const Booking = () => {
                       </div>
                       {formData.package && (
                         <p className="mt-2 text-sm text-primary-600 font-medium">
-                          {packages.find(p => p.value === formData.package)?.price}
+                          {(() => {
+                            const pkg = packages.find(p => p.value === formData.package);
+                            if (!pkg?.priceKES) return 'Contact for quote';
+                            return `From ${formatPrice(pkg.priceKES)}/person`;
+                          })()}
                         </p>
                       )}
                     </div>
@@ -352,27 +358,14 @@ const Booking = () => {
                 Our safari experts are ready to assist you with any questions.
               </p>
               <div className="space-y-3">
-                <a href="tel:0712695186" className="flex items-center p-3 bg-primary-50 rounded-lg hover:bg-primary-100 transition-colors">
-                  <Phone className="h-5 w-5 text-primary-600 mr-3" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">Drusilah</p>
-                    <p className="text-sm text-primary-600">0712695186</p>
+                <div className="p-3 bg-primary-50 rounded-lg">
+                  <p className="text-sm font-medium text-gray-900 mb-2">Customer Care</p>
+                  <div className="space-y-1">
+                    <a href="tel:0712695186" className="block text-sm text-primary-600 hover:underline">0712695186</a>
+                    <a href="tel:0712981009" className="block text-sm text-primary-600 hover:underline">0712981009</a>
+                    <a href="tel:0708400078" className="block text-sm text-primary-600 hover:underline">0708400078</a>
                   </div>
-                </a>
-                <a href="tel:0712981009" className="flex items-center p-3 bg-primary-50 rounded-lg hover:bg-primary-100 transition-colors">
-                  <Phone className="h-5 w-5 text-primary-600 mr-3" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">Milka</p>
-                    <p className="text-sm text-primary-600">0712981009</p>
-                  </div>
-                </a>
-                <a href="tel:0708400078" className="flex items-center p-3 bg-primary-50 rounded-lg hover:bg-primary-100 transition-colors">
-                  <Phone className="h-5 w-5 text-primary-600 mr-3" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">Maingi</p>
-                    <p className="text-sm text-primary-600">0708400078</p>
-                  </div>
-                </a>
+                </div>
               </div>
             </div>
 

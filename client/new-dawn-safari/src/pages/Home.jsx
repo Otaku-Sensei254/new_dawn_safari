@@ -4,8 +4,11 @@ import {
   MapPin, Calendar, ChevronRight, Star, Building
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useCurrency } from '../contexts/CurrencyContext';
 
 const Home = () => {
+  const { formatPrice } = useCurrency();
+
   useEffect(() => {
     // Smooth scroll for anchor links
     const handleAnchorClick = (e) => {
@@ -39,12 +42,12 @@ const Home = () => {
       description: "Experience the world-famous Masai Mara with its incredible wildlife and the Big Five.",
       image: "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=800&q=80",
       features: ["Full Board Accommodation", "Game Drives in 4x4", "Professional Guide", "Park Entry Fees"],
-      priceFrom: "Kes.26,460",
+      priceFromKES: 26460,
       priceNote: "per person (group of 6, Green Season)",
       seasons: [
-        { name: "Green Season", period: "7th April - 30th June 2026", price: "From Kes.26,460" },
-        { name: "Peak Season", period: "1st July - 31st October 2026", price: "From Kes.37,260" },
-        { name: "Regular Season", period: "1st November - 21st December 2026", price: "From Kes.32,400" }
+        { name: "Green Season", period: "7th April - 30th June 2026", priceKES: 26460 },
+        { name: "Peak Season", period: "1st July - 31st October 2026", priceKES: 37260 },
+        { name: "Regular Season", period: "1st November - 21st December 2026", priceKES: 32400 }
       ]
     },
     {
@@ -54,11 +57,11 @@ const Home = () => {
       description: "Relax on Kenya's pristine beaches with all-inclusive luxury at top coastal resorts.",
       image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80",
       features: ["All Meals (Breakfast, Lunch, Dinner)", "Snacks & Soft Drinks", "SGR Return Tickets", "Hotel Transfers"],
-      priceFrom: "Kes.51,300",
+      priceFromKES: 51300,
       priceNote: "per person sharing (single room)",
       seasons: [
-        { name: "North Coast", period: "Valid: 7th April - 30th June 2026", price: "From Kes.51,300" },
-        { name: "South Coast", period: "Valid: 7th April - 30th June 2026", price: "From Kes.81,140" }
+        { name: "North Coast", period: "Valid: 7th April - 30th June 2026", priceKES: 51300 },
+        { name: "South Coast", period: "Valid: 7th April - 30th June 2026", priceKES: 81140 }
       ]
     },
     {
@@ -68,11 +71,11 @@ const Home = () => {
       description: "The ultimate African safari tracking Lion, Leopard, Rhino, Elephant, and Buffalo.",
       image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=800&q=80",
       features: ["Multiple Game Reserves", "Luxury Tented Camps", "Bush Dinners", "Cultural Visits"],
-      priceFrom: "Kes.75,000",
+      priceFromKES: 75000,
       priceNote: "per person (group of 4)",
       seasons: [
-        { name: "Green Season", period: "April - June 2026", price: "From Kes.75,000" },
-        { name: "Peak Season", period: "July - October 2026", price: "From Kes.95,000" }
+        { name: "Green Season", period: "April - June 2026", priceKES: 75000 },
+        { name: "Peak Season", period: "July - October 2026", priceKES: 95000 }
       ]
     }
   ];
@@ -289,7 +292,7 @@ const Home = () => {
                     {pkg.seasons.map((season, idx) => (
                       <div key={idx} className="flex justify-between items-center text-sm py-1 border-b border-gray-200 last:border-0">
                         <span className="text-gray-600">{season.name}</span>
-                        <span className="font-semibold text-primary-600">{season.price}</span>
+                        <span className="font-semibold text-primary-600">From {formatPrice(season.priceKES)}</span>
                       </div>
                     ))}
                   </div>
@@ -298,7 +301,7 @@ const Home = () => {
                   <div className="flex items-center justify-between pt-4 border-t border-gray-200">
                     <div>
                       <p className="text-xs text-gray-500">Starting from</p>
-                      <p className="text-xl font-bold text-primary-600">{pkg.priceFrom}</p>
+                      <p className="text-xl font-bold text-primary-600">{formatPrice(pkg.priceFromKES)}</p>
                       <p className="text-xs text-gray-400">{pkg.priceNote}</p>
                     </div>
                     <Link 
